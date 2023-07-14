@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.0.32
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    ports:
+      - '7000:80'
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: password
+      UPLOAD_LIMIT: 20M
+      PHP_UPLOAD_MAX_FILESIZE: 20M
+      PHP_POST_MAX_SIZE: 20M
+    depends_on:
+      - mysql
+
+  adminer:
+    image: adminer:4.8.1
+    ports:
+      - 7001:8080
+
+volumes:
+  mysql-data:
+    name: mysql-data
